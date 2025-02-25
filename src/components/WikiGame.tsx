@@ -48,12 +48,18 @@ export const WikiGame = () => {
 
     setIsLoading(true);
     try {
-      // Simulated API call - replace with actual implementation
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setResult({
-        path: [startWord, "Intermediate Term", endWord],
-        connection: `Here's an interesting connection between ${startWord} and ${endWord}...`,
+      const response = await fetch('/functions/v1/wiki-path', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ startWord, endWord }),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to find connection');
+      }
+
+      const data = await response.json();
+      setResult(data);
     } catch (error) {
       toast({
         title: "Error",
